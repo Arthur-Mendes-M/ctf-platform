@@ -23,7 +23,32 @@ const kanit = Kanit({
 
 export const metadata: Metadata = {
   title: "CTF Arena | Insper",
-  description: "The better academic capture the flag!",
+  description:
+    "The best academic capture the flag experience at Insper University. Play and learn with your friends!",
+  metadataBase: new URL("https://ctfv2.vercel.app"),
+
+  openGraph: {
+    type: "website",
+    title: "CTF Arena | Insper",
+    description:
+      "The best academic capture the flag experience at Insper University. Play and learn with your friends!",
+    url: "https://ctfv2.vercel.app",
+    images: [
+      {
+        url: "/capture_the_flag_login.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "CTF Arena | Insper",
+    description:
+      "The best academic capture the flag experience at Insper University. Play and learn with your friends!",
+    images: ["/capture_the_flag_login.png"],
+  },
 };
 
 const toastIcons = {
