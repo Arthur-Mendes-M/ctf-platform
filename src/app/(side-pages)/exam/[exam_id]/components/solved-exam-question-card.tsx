@@ -10,6 +10,8 @@ import {
   CircleXIcon,
   Lightbulb,
   PartyPopper,
+  ListChecks,
+  ChevronUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ProductActions } from "@/utils/types/store";
@@ -21,12 +23,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface SolvedQuestionCardProps {
   question: ExerciseType;
+  isAdmin?: boolean;
 }
 
-export function SolvedQuestionCard({ question }: SolvedQuestionCardProps) {
+export function SolvedQuestionCard({
+  question,
+  isAdmin = false,
+}: SolvedQuestionCardProps) {
   const renderQuestionContent = () => {
     const correctAnswer = question.answer;
     const userAnswer = question.user_answer;
@@ -183,7 +194,7 @@ export function SolvedQuestionCard({ question }: SolvedQuestionCardProps) {
                     </Badge>
                   </DialogTrigger>
 
-                  <DialogContent >
+                  <DialogContent>
                     <DialogHeader className="font-normal">
                       <DialogTitle className="flex gap-3 flex-col">
                         <span className="flex gap-2 items-center font-normal">
@@ -218,20 +229,50 @@ export function SolvedQuestionCard({ question }: SolvedQuestionCardProps) {
 
         <div className="space-y-4">{renderQuestionContent()}</div>
 
-        {question.answer === question.user_answer ? (
-          <div className="p-3 rounded-lg border border-green-500/20 text-green-500/80">
-            <div className="text-sm flex gap-2 items-center flex-wrap text-success-foreground font-medium">
-              <PartyPopper />
-              Você respondeu corretamente
+        {!isAdmin &&
+          (question.answer === question.user_answer ? (
+            <div className="p-3 rounded-lg border border-green-500/20 text-green-500/80">
+              <div className="text-sm flex gap-2 items-center flex-wrap text-success-foreground font-medium">
+                <PartyPopper />
+                Você respondeu corretamente
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="p-3 rounded-lg border border-red-500/20 text-red-500/80">
-            <div className="text-sm flex gap-2 items-center flex-wrap text-success-foreground font-medium">
-              <CircleXIcon />
-              Essa você errou
+          ) : (
+            <div className="p-3 rounded-lg border border-red-500/20 text-red-500/80">
+              <div className="text-sm flex gap-2 items-center flex-wrap text-success-foreground font-medium">
+                <CircleXIcon />
+                Essa você errou
+              </div>
             </div>
-          </div>
+          ))}
+
+        {question.answer_reason && (
+          // <div className="p-3 rounded-lg border border-green-500/20">
+          //   <div className="text-xl flex gap-2 items-center flex-wrap font-medium">
+          //     <ListChecks />
+          //     Explicação
+          //   </div>
+
+          //   <div className="text-sm">
+          //     <p>{question.answer_reason}</p>
+          //   </div>
+          // </div>
+
+          <Collapsible>
+            <CollapsibleTrigger className="flex gap-3 items-center justify-between cursor-pointer w-full p-2 rounded-md bg-secondary">
+              <div className="flex gap-3 items-center">
+                <ListChecks />
+                Entender resposta certa
+              </div>
+
+              {/* seta gira quando o colapsável está aberto */}
+              <ChevronUp className="chevron" />
+            </CollapsibleTrigger>
+
+            <CollapsibleContent className="bg-secondary mt-3 p-2 rounded-md text-sm">
+              {question.answer_reason}
+            </CollapsibleContent>
+          </Collapsible>
         )}
       </CardContent>
     </Card>

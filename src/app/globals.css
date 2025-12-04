@@ -231,4 +231,9 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  [data-state="open"] .chevron {
+    transform: rotate(-180deg);
+    transition: transform 300ms linear;
+  }
 }

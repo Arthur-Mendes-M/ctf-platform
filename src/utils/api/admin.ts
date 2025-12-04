@@ -121,6 +121,7 @@ export async function updateExam({ newExam, examId, }: {
     | "ends_at"
     | "exercises"
     | "substitute_exercises"
+    | "review_allowed"
   >>
   examId: string
 }) {

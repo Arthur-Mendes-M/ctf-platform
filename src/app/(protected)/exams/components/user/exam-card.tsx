@@ -58,6 +58,7 @@ export default function ExamCard({ exam }: { exam: ExamFilteredType }) {
     redirect(`/exam/${exam.id}/review`, RedirectType.push);
   };
 
+  console.log("exam", exam)
   const ExamCardPreview = () => {
     return (
       <Card
@@ -292,13 +293,15 @@ export default function ExamCard({ exam }: { exam: ExamFilteredType }) {
                     className="w-full"
                     disabled={
                       isRedirecting ||
-                      differenceInMinutes(new Date(), exam.ends_at) < 120
+                      (!exam.review_allowed &&
+                      differenceInMinutes(new Date(), exam.ends_at) < 120)
                     }
                     onClick={handleReviewExamRedirect}
                   >
                     {isRedirecting ? (
                       "Redirecionando..."
-                    ) : differenceInMinutes(new Date(), exam.ends_at) < 120 ? (
+                    ) : differenceInMinutes(new Date(), exam.ends_at) < 120 &&
+                      !exam.review_allowed ? (
                       "Revisão disponível após 2 horas do término"
                     ) : (
                       <>

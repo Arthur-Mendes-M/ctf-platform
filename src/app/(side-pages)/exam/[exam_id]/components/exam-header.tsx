@@ -11,9 +11,10 @@ import { ProductActions, ProductActionsStyles } from "@/utils/types/store";
 interface ExamHeaderProps {
   exam: ExamType;
   onFinish?: () => void;
+  isAdmin?: boolean
 }
 
-export function ExamHeader({ exam, onFinish }: ExamHeaderProps) {
+export function ExamHeader({ exam, onFinish, isAdmin }: ExamHeaderProps) {
   const timeRemaining = differenceInSeconds(exam.ends_at, new Date());
   return (
     <header className="bg-background/95 backdrop-blur-sm border-b sticky top-0 z-50 shadow-sm">
@@ -85,17 +86,17 @@ export function ExamHeader({ exam, onFinish }: ExamHeaderProps) {
           )}
 
           <div className="flex items-center gap-4 flex-wrap">
-            {getExamStatus(exam) === "Em andamento" && (
+            {getExamStatus(exam) === "Em andamento" && !isAdmin && (
               <ExamTimer timeRemaining={timeRemaining} />
             )}
 
-            {getExamStatus(exam) === "Em andamento" ? (
+            {getExamStatus(exam) === "Em andamento" && !isAdmin ? (
               <Button className="bg-ctf-red text-white opacity-75 hover:bg-ctf-red hover:opacity-90" onClick={onFinish}>
                 <LogOut className="w-4 h-4" />
                 Finalizar
               </Button>
             ) : (
-              <Button onClick={() => redirect("/exams")} variant="secondary">
+              <Button onClick={() => redirect("/exams")} variant="secondary" className="shrink-1 whitespace-break-spaces">
                 Voltar para listagem de exames
                 <ArrowUpRight />
               </Button>

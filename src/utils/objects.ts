@@ -33,4 +33,17 @@ export function getChangedFields<T extends object>(
     }
 
     return changes;
+}
+
+
+export function hasDuplicateObjectsOnArray(arr, propertyName) {
+  const seenValues = new Set();
+  for (const obj of arr) {
+    const value = obj[propertyName];
+    if (seenValues.has(value)) {
+      return true; // Duplicate found
+    }
+    seenValues.add(value);
   }
+  return false; // No duplicates found
+}

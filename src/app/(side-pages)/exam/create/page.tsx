@@ -27,7 +27,8 @@ import { createExam } from "@/utils/api/admin";
 import { redirect } from "next/navigation";
 import { validateExamData } from "@/utils/validations";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { v4 as uuidv4} from "uuid";
+import { v4 as uuidv4 } from "uuid";
+import { hasDuplicateObjectsOnArray } from "@/utils/objects";
 
 export default function ExamCreator() {
   const initialExamData: Pick<
@@ -78,6 +79,12 @@ export default function ExamCreator() {
 
   const handleCreateExam = async () => {
     if (!validateExamData(examData)) return;
+
+    if(!examData.starts_at || !examData.ends_at) {
+      toast.warning("Preencha todos os campos!", {description: "Certifique-se de ter preenchido todos os campos, como data e hora de inicio/final."})
+
+      return
+    }
 
     const formattedData = {
       ...examData,
@@ -266,26 +273,26 @@ export default function ExamCreator() {
               </SelectContent>
             </Select>
           </div>
-          {!isSubstitute &&
-          <div className="flex flex-col gap-2">
-            <Label>Valor do Exercício</Label>
-            <Input
-              required
-              min={0}
-              type="number"
-              step="0.1"
-              value={exercise.exercise_value}
-              onChange={(e) =>
-                updateExercise(
-                  index,
-                  "exercise_value",
-                  Number.parseFloat(e.target.value),
-                  isSubstitute
-                )
-              }
-            />
-          </div>
-          }
+          {!isSubstitute && (
+            <div className="flex flex-col gap-2">
+              <Label>Valor do Exercício</Label>
+              <Input
+                required
+                min={0}
+                type="number"
+                step="0.1"
+                value={exercise.exercise_value}
+                onChange={(e) =>
+                  updateExercise(
+                    index,
+                    "exercise_value",
+                    Number.parseFloat(e.target.value),
+                    isSubstitute
+                  )
+                }
+              />
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <Label>Dica do Exercício</Label>
@@ -340,6 +347,7 @@ export default function ExamCreator() {
                     )
                   }
                   placeholder={`Alternativa ${altIndex + 1}`}
+                  className={`${hasDuplicateObjectsOnArray(exercise.alternatives, "value") && "border-ctf-red"}`}
                 />
                 {exercise.alternatives!.length > 2 && (
                   <Button
@@ -368,24 +376,46 @@ export default function ExamCreator() {
               }
               className="flex grow gap-3 flex-wrap"
             >
-              {exercise.alternatives!.map((option, i) => {
-                const tempExerciseId = uuidv4();
+              {exercise.alternatives!.every(alt => alt.value) && !hasDuplicateObjectsOnArray(exercise.alternatives, "value") ? (
+                exercise.alternatives!.map((option, i) => {
+                  const tempExerciseId = uuidv4();
 
-                return(
-                <div key={i} className="flex items-center grow space-x-2">
-                  <RadioGroupItem
-                    value={option.value}
-                    id={`exercise-${tempExerciseId}-option-${i}`}
-                  />
-                  <Label
-                    htmlFor={`exercise-${tempExerciseId}-option-${i}`}
-                    className="text-sm cursor-pointer flex-1 p-2 rounded hover:bg-muted/50"
-                  >
-                    <span className="mr-2">{option.letter}</span>
-                    {option.value || "Vazio"}
-                  </Label>
+                  if (option.value) {
+                    return (
+                      <div
+                        key={i}
+                        className={`flex items-center grow space-x-2 ${
+                          !option.value && "opacity-65 italic"
+                        }`}
+                      >
+                        <RadioGroupItem
+                          value={option.value}
+                          id={`exercise-${tempExerciseId}-option-${i}`}
+                          disabled={!option.value}
+                        />
+                        <Label
+                          htmlFor={`exercise-${tempExerciseId}-option-${i}`}
+                          className={`text-sm flex-1 p-2 rounded ${
+                            option.value && "cursor-pointer hover:bg-muted/50"
+                          }`}
+                        >
+                          <span className="mr-2">{option.letter}</span>
+                          {option.value || "Vazio"}
+                        </Label>
+                      </div>
+                    );
+                  }
+                })
+              ) : (
+                <div
+                  className={`flex items-center grow space-x-2 opacity-65 italic`}
+                >
+                  <small>
+                    Crie ao menos duas alternativas diferentes e atribua seus valores para poder selecionar qual a
+                    certa!
+                  </small>
                 </div>
-              )})}
+              )}
             </RadioGroup>
           ) : (
             <Input
@@ -397,6 +427,25 @@ export default function ExamCreator() {
               }
             />
           )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>Explicação da resposta correta (opcional)</Label>
+
+          <Textarea
+            placeholder="Explique a resposta correta"
+            required
+            value={exercise.answer_reason}
+            onChange={(e) =>
+              updateExercise(
+                index,
+                "answer_reason",
+                e.target.value,
+                isSubstitute
+              )
+            }
+            rows={3}
+          />
         </div>
       </CardContent>
     </Card>
@@ -533,6 +582,7 @@ export default function ExamCreator() {
                 type="number"
                 step="0.1"
                 min={0}
+                max={100}
                 value={examData.exercises.reduce(
                   (acc, ex) => acc + (ex.exercise_value || 0),
                   0

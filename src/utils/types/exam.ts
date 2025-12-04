@@ -19,6 +19,7 @@ export type ExamType = {
     ends_at: string,
     solved: boolean,
     score?: number,
+    review_allowed: boolean
 
     used_products_exam?: UsedProductAtExamType[]
 }
@@ -54,7 +55,7 @@ export type SubmitExamType = {
     answers: { exercise_id: string, answer: string }[]
 }
 
-export type ExamFilteredType = Pick<ExamType, "id" | "category" | "title" | "description" | "difficulty" | "ends_at" | "starts_at" | "xp" | "ruby" | "grade" | "solved"> & { exercises_quantity: number, finished_at?: string, initiated_at?: string, score?: number, ranking_position?: number }
+export type ExamFilteredType = Pick<ExamType, "id" | "category" | "title" | "description" | "difficulty" | "ends_at" | "starts_at" | "xp" | "ruby" | "grade" | "solved" | "review_allowed"> & { exercises_quantity: number, finished_at?: string, initiated_at?: string, score?: number, ranking_position?: number }
 
 export type ExamToCreateType = Pick<ExamType, "category" | "title" | "description" | "difficulty" | "ends_at" | "starts_at" | "xp" | "ruby" | "grade" | "hidden" | "exercises" | "substitute_exercises">
 
@@ -71,6 +72,7 @@ export type ExerciseType = {
     alternatives?: AlternativesExerciseType[]
     user_answer?: string
     answer: string,
+    answer_reason?: string,
     exercise_value: number,
     removed_alternatives?: AlternativesExerciseType[]
     

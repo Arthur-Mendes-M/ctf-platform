@@ -35,10 +35,16 @@ import {
 import { updateExamVisibility, deleteExam } from "@/utils/api/admin";
 import { redirect, RedirectType } from "next/navigation";
 import { updateUserSession } from "@/utils/cookies";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function ExamsTable() {
   const queryClient = useQueryClient();
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isRedirectingForEditing, setIsRedirectingForEditing] = useState(false);
+  const [isRedirectingForReviewing, setIsRedirectingForReviewing] = useState(false);
   const [examWillRedirecting, setExamWillRedirecting] =
     useState<ExamType | null>(null);
 
@@ -163,10 +169,17 @@ export default function ExamsTable() {
   };
 
   const handleEdit = async (exam: ExamType) => {
-    setIsRedirecting(true);
+    setIsRedirectingForEditing(true);
     setExamWillRedirecting(exam);
     await updateUserSession({ current_exam: exam });
     redirect(`/exam/${exam.id}/edit`, RedirectType.push);
+  };
+
+  const handleReview = async (exam: ExamType) => {
+    setIsRedirectingForReviewing(true);
+    setExamWillRedirecting(exam);
+    await updateUserSession({ current_exam: exam });
+    redirect(`/exam/${exam.id}/review`, RedirectType.push);
   };
 
   return (
@@ -202,9 +215,7 @@ export default function ExamsTable() {
               <TableRow key={exam.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <span className="font-medium">
-                      {exam.title}
-                    </span>
+                    <span className="font-medium">{exam.title}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -228,9 +239,7 @@ export default function ExamsTable() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <span className="font-medium">
-                      {exam.grade}
-                    </span>
+                    <span className="font-medium">{exam.grade}</span>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -255,29 +264,67 @@ export default function ExamsTable() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEdit(exam)}
-                      className="h-8 w-8 p-0"
-                      disabled={isRedirecting}
-                    >
-                      {isRedirecting &&
-                      examWillRedirecting &&
-                      examWillRedirecting.id === exam.id ? (
-                        <LoaderCircle className="h-4 w-4 text-ctf-blue animate-spin" />
-                      ) : (
-                        <Edit className="h-4 w-4 text-ctf-blue" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(exam)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Trash2 className="h-4 w-4 text-ctf-red" />
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleReview(exam)}
+                          className="h-8 w-8 p-0"
+                          disabled={isRedirectingForReviewing}
+                        >
+                          {isRedirectingForReviewing &&
+                          examWillRedirecting &&
+                          examWillRedirecting.id === exam.id ? (
+                            <LoaderCircle className="h-4 w-4 text-ctf-blue animate-spin" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-ctf-green" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Revisar exame</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEdit(exam)}
+                          className="h-8 w-8 p-0"
+                          disabled={isRedirectingForEditing}
+                        >
+                          {isRedirectingForEditing &&
+                          examWillRedirecting &&
+                          examWillRedirecting.id === exam.id ? (
+                            <LoaderCircle className="h-4 w-4 text-ctf-blue animate-spin" />
+                          ) : (
+                            <Edit className="h-4 w-4 text-ctf-blue" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Editar exame</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(exam)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Trash2 className="h-4 w-4 text-ctf-red" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Excluir exame</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>
