@@ -259,7 +259,7 @@ export default function FirstInventorySelector() {
                             product.price * product.quantity;
 
                           return (
-                            <div key={index} className="space-y-2 bg-secondary-foreground">
+                            <div key={index} className="space-y-2 bg-secondary rounded-2xl">
                               {/* Product Item */}
                               <div className="flex items-start flex-wrap gap-3 p-3 rounded-lg">
                                 <div className="flex items-center justify-center gap-2 flex-1 flex-wrap">
