@@ -65,7 +65,10 @@ export async function getFullExam(examId: string) {
         },
     })
         .then(response => response.json())
-        .then(data => data)
+        .then(data => {
+            console.log("aQUI ANTES DE RETORNAR", data)
+            return data
+        })
         .catch(error => error)
     
     return exam.data || null

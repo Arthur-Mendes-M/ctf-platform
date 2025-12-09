@@ -417,7 +417,7 @@ export default function ExamEdit() {
               onValueChange={(e) =>
                 updateExercise(index, "answer", e, isSubstitute)
               }
-              className="flex grow gap-3 flex-wrap"
+              className="flex flex-col grow gap-3"
             >
               {exercise.alternatives!.map((option, i) => {
                 const tempExerciseId = uuidv4();

@@ -36,14 +36,19 @@ export function getChangedFields<T extends object>(
 }
 
 
-export function hasDuplicateObjectsOnArray(arr, propertyName) {
-  const seenValues = new Set();
+export function hasDuplicateObjectsOnArray<
+  T extends Record<string, any>, 
+  K extends keyof T
+>(arr: T[], propertyName: K): boolean {
+  const seenValues = new Set<T[K]>();
+
   for (const obj of arr) {
     const value = obj[propertyName];
     if (seenValues.has(value)) {
-      return true; // Duplicate found
+      return true;
     }
     seenValues.add(value);
   }
-  return false; // No duplicates found
+
+  return false;
 }

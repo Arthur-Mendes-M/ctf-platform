@@ -374,7 +374,7 @@ export default function ExamCreator() {
               onValueChange={(e) =>
                 updateExercise(index, "answer", e, isSubstitute)
               }
-              className="flex grow gap-3 flex-wrap"
+              className="flex flex-col grow gap-3"
             >
               {exercise.alternatives!.every(alt => alt.value) && !hasDuplicateObjectsOnArray(exercise.alternatives, "value") ? (
                 exercise.alternatives!.map((option, i) => {
