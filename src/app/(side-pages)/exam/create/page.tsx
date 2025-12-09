@@ -347,7 +347,7 @@ export default function ExamCreator() {
                     )
                   }
                   placeholder={`Alternativa ${altIndex + 1}`}
-                  className={`${hasDuplicateObjectsOnArray(exercise.alternatives, "value") && "border-ctf-red"}`}
+                  className={`${hasDuplicateObjectsOnArray(exercise.alternatives!, "value") && "border-ctf-red"}`}
                 />
                 {exercise.alternatives!.length > 2 && (
                   <Button
@@ -376,7 +376,7 @@ export default function ExamCreator() {
               }
               className="flex flex-col grow gap-3"
             >
-              {exercise.alternatives!.every(alt => alt.value) && !hasDuplicateObjectsOnArray(exercise.alternatives, "value") ? (
+              {exercise.alternatives!.every(alt => alt.value) && !hasDuplicateObjectsOnArray(exercise.alternatives!, "value") ? (
                 exercise.alternatives!.map((option, i) => {
                   const tempExerciseId = uuidv4();
 
