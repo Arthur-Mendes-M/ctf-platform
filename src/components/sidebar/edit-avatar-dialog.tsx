@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { UserRoundPen } from "lucide-react";
 import { type LoggedUserType } from "@/utils/types/user";
 import { useState } from "react";
+import { updateUserSession } from "@/utils/cookies";
 
 export default function EditAvatarDialog({
   open,
@@ -40,18 +41,14 @@ export default function EditAvatarDialog({
     process.env.NEXT_PUBLIC_AVATAR_API_URL + "10",
   ];
 
-    defaultAvatars.forEach(avatar => {
-        console.log("Avatar:", avatar)
-    });
-
   const generateAvatarFromSeed = () => {
     if (seed.trim()) {
-      user.avatar_url = process.env.AVATAR_API_URL + seed;
+      updateUserSession({ user: {avatar_url: process.env.NEXT_PUBLIC_AVATAR_API_URL + seed} });
     }
   };
 
   const selectDefaultAvatar = (avatar: string) => {
-    user.avatar_url = avatar;
+    updateUserSession({ user: {avatar_url: avatar} });
   };
 
   return (
@@ -124,19 +121,21 @@ export default function EditAvatarDialog({
                 Avatares padrões
               </Label>
               <div className="grid grid-cols-5 gap-3">
-                {defaultAvatars.map((avatar, index) => (
+                {defaultAvatars.map((avatar, index) => {                  
+                  return (
                   <button
                     key={index}
                     onClick={() => selectDefaultAvatar(avatar)}
-                    className="group relative aspect-square rounded-lg overflow-hidden border-2 border-border hover:border-primary/50 transition-all duration-200 cursor-pointer flex items-center justify-center"
+                    disabled={user.avatar_url == avatar}
+                    className={`group relative aspect-square rounded-lg overflow-hidden border-2 border-border hover:border-primary/50 transition-all ${user.avatar_url == avatar && "border-ctf-green opacity-80"} duration-200 cursor-pointer flex items-center justify-center`}
                   >
                     <Avatar className="h-8 w-8 md:w-12 md:h-12">
                       <AvatarImage
                         src={avatar || ""}
                       />
                     </Avatar>
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200" />
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className={`absolute inset-0 bg-black/0 ${user.avatar_url != avatar && "group-hover:bg-black/10"} transition-colors duration-200`} />
+                    <div className={`absolute inset-0 flex items-center justify-center opacity-0 ${user.avatar_url != avatar && "group-hover:opacity-100"}  transition-opacity duration-200`}>
                       <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                         <span className="text-primary-foreground text-xs">
                           ✓
@@ -144,7 +143,7 @@ export default function EditAvatarDialog({
                       </div>
                     </div>
                   </button>
-                ))}
+                )})}
               </div>
             </div>
           </div>

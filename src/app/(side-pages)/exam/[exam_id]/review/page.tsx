@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { ExamHeader } from "../components/exam-header";
 import { redirect, useParams } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getFullExam } from "@/utils/api/exam";
 import { ExamType } from "@/utils/types/exam";
 import { cn } from "@/lib/utils";
@@ -37,9 +37,11 @@ export default function ReviewExam() {
   const { exam_id } = useParams<{ exam_id: string }>();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showCurrentRightAnswer, setShowCurrentRightAnswer] = useState(false);
-  const [reviewAllowed, setReviewAllowed] = useState(false);
+  const queryClient = useQueryClient();
+
+  // const [reviewAllowed, setReviewAllowed] = useState(false);
   // const [answers, setAnswers] = useState<Record<string, string>>({});
-  console.log("Antes de tudo");
+
   const { data: completedExam, isLoading } = useQuery<ExamType>({
     queryKey: ["completed-exam"],
     queryFn: async () => await getFullExam(exam_id),
@@ -47,7 +49,7 @@ export default function ReviewExam() {
     // staleTime: Infinity,
   });
 
-  console.log("Antes de tudo 2");
+  const reviewAllowed = completedExam?.review_allowed ?? false;
 
   const { mutate: updateReviewVisibilityExam, isPending: updatingExam } =
     useMutation({
@@ -59,8 +61,12 @@ export default function ReviewExam() {
         }),
       onSuccess: (data) => {
         if (data.success) {
-          setReviewAllowed(true)
+          // setReviewAllowed(true)
           toast.success("Prova liberada para revisão!");
+        
+          queryClient.setQueryData<ExamType>(["completed-exam"], (old) =>
+            old ? { ...old, review_allowed: true } : old
+          );
         } else {
           toast.error("Algo deu errado!", {description: "Favor tente novamente em instantes."});
         }
@@ -69,8 +75,6 @@ export default function ReviewExam() {
       // staleTime: Infinity,
     });
 
-  console.log("Antes de tudo 3");
-
   const { data: userInfoQuery } = useQuery<CurrentSessionType>({
     queryKey: ["user-info"],
     queryFn: async () => await getUserSession(),
@@ -78,15 +82,11 @@ export default function ReviewExam() {
     // staleTime: Infinity,
   });
 
-  useEffect(() => {
-    if(completedExam) {
-      setReviewAllowed(completedExam.review_allowed)
-    }
-  }, [completedExam])
-
-  console.log("Antes de tudo aqui em algum lugar");
-  console.log("Exame ID", exam_id);
-  console.log("Exame", completedExam);
+  // useEffect(() => {
+  //   if(completedExam) {
+  //     setReviewAllowed(completedExam.review_allowed)
+  //   }
+  // }, [completedExam])
 
   // const handleAnswerChange = (questionId: string, answer: string) => {
   //   setAnswers((prev) => ({
@@ -123,18 +123,13 @@ export default function ReviewExam() {
     completedExam &&
     (rightAnsweredQuestions.length / completedExam.exercises.length) * 100;
 
-  console.log("Antes de tudo aqui em algum lugar 2");
-
   if (isLoading) {
     return <Loading />;
   }
 
-  console.log("Antes de tudo 4");
-
   if (!completedExam && !isLoading) {
     return <ExamNotFound />;
   }
-  console.log("Antes de tudo 5");
 
   if (completedExam) {
     return (

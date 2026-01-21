@@ -8,6 +8,7 @@ import {
   Eye,
   EyeClosed,
   LoaderCircle,
+  FileSpreadsheet,
 } from "lucide-react";
 import { toast } from "sonner";
 import { getAllExams } from "@/utils/api/exam";
@@ -325,6 +326,24 @@ export default function ExamsTable() {
                         <p>Excluir exame</p>
                       </TooltipContent>
                     </Tooltip>
+
+                    <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        // onClick={() => getChallengesReportSheetMutation.mutate(challenge.id)}
+                        onClick={() => window.open(`/api/excel/${exam.id}?entity=exam`, "_blank")}
+                        className="h-8 w-8 p-0"
+                      >
+                        <FileSpreadsheet className="h-4 w-4 text-ctf-green" />
+                      </Button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>
+                      <p>Baixar relatório (.xlsx)</p>
+                    </TooltipContent>
+                  </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>

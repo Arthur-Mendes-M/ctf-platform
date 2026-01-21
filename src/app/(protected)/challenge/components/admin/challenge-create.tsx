@@ -48,7 +48,7 @@ export default function CreateChallengeForms() {
 
         queryClient.setQueryData(["challenges"], (oldData: ChallengeType[]) => [
           data.data,
-          ...oldData,
+          ...oldData || [],
         ]);
       } else {
         toast.error("Algo deu errado! Favor tente novamente.", {

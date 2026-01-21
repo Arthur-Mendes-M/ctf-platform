@@ -42,10 +42,6 @@ export function SolvedQuestionCard({
     const correctAnswer = question.answer;
     const userAnswer = question.user_answer;
 
-    console.log("Correct Answer:", correctAnswer);
-    console.log("User Answer:", userAnswer);
-    console.log("Question Data:", question);
-
     switch (question.exercise_type) {
       case "alternativa":
         return (

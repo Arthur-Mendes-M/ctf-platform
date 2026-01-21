@@ -7,8 +7,6 @@ import { Crown, Medal, Award, Zap, Trophy } from "lucide-react"
 import type { RankingUserExamType } from "@/utils/types/user";
 
 export function ExamRankingList({ ranking, currentUserEmail }: { ranking : RankingUserExamType[], currentUserEmail: string }) {
-  console.log("RANKING", ranking);
-
   const getPositionIcon = (position: number) => {
     switch (position) {
       case 1:

@@ -27,6 +27,7 @@ import {
   Edit,
   Eye,
   EyeClosed,
+  FileSpreadsheet,
   Gem,
   ShieldQuestion,
   Swords,
@@ -44,6 +45,8 @@ import {
   updateChallengeVisibility,
 } from "@/utils/api/admin";
 import { clearUnmodifiedObjectKeys } from "@/utils/objects";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+// import { openExcelInNewTab } from "@/utils/sheets";
 
 export default function ChallengesTable() {
   const queryClient = useQueryClient();
@@ -360,22 +363,56 @@ export default function ChallengesTable() {
 
                 <TableCell>
                   <div className="flex items-center justify-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleEdit(challenge)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Edit className="h-4 w-4 text-ctf-blue" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDelete(challenge)}
-                      className="h-8 w-8 p-0"
-                    >
-                      <Trash2 className="h-4 w-4 text-ctf-red" />
-                    </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEdit(challenge)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Edit className="h-4 w-4 text-ctf-blue" />
+                      </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Editar desafio</p>
+                      </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDelete(challenge)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Trash2 className="h-4 w-4 text-ctf-red" />
+                      </Button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>
+                      <p>Excluir desafio</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        // onClick={() => getChallengesReportSheetMutation.mutate(challenge.id)}
+                        onClick={() => window.open(`/api/excel/${challenge.id}?entity=challenge`, "_blank")}
+                        className="h-8 w-8 p-0"
+                      >
+                        <FileSpreadsheet className="h-4 w-4 text-ctf-green" />
+                      </Button>
+                    </TooltipTrigger>
+
+                    <TooltipContent>
+                      <p>Baixar relatório (.xlsx)</p>
+                    </TooltipContent>
+                  </Tooltip>
                   </div>
                 </TableCell>
               </TableRow>
