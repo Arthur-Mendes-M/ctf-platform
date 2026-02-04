@@ -1,19 +1,20 @@
 import { cookies } from "next/headers";
+import { NextRequest } from "next/server";
 
 type RouteParams = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 export async function GET(
-  _request: Request,
+  request: NextRequest,
   { params }: RouteParams
 ) {
-  const { searchParams } = new URL(_request.url);
+  const { searchParams } = new URL(request.url);
   const entity: string = searchParams.get("entity") || "";
 
-  const { id } = params;
+  const { id } = await params;
 
   const cks = await cookies()
   const session = JSON.parse(cks.get("ctf-session")?.value || "");
