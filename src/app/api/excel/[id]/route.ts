@@ -13,7 +13,7 @@ export async function GET(
   const { searchParams } = new URL(_request.url);
   const entity: string = searchParams.get("entity") || "";
 
-  const { id } = await params;
+  const { id } = params;
 
   const cks = await cookies()
   const session = JSON.parse(cks.get("ctf-session")?.value || "");
