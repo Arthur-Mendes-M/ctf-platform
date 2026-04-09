@@ -17,7 +17,7 @@ export default function CTFLogo({
           <Shield className={cn("size-6 stroke-1 absolute inset-0 m-auto", variant === "short" && "size-7")} />
         </div>
       </div>
-      {variant === "long" && "Capture the Flag | Insper"}
+      {variant === "long" && "Capture the Flag"}
     </div>
   );
 }

@@ -15,8 +15,8 @@ import { QuickActions } from "@/components/sidebar/quick-actions";
 import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
-  title: "CTF Arena | Insper",
-  description: "The better academic capture the flag!",
+  title: "CTF Arena",
+  description: "The best academic capture the flag experience. Play and learn with your friends!",
 };
 
 export default async function RootLayout({

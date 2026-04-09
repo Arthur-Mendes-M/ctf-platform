@@ -40,7 +40,7 @@ export default function LoginForm() {
       className={cn("flex flex-col gap-6")}
     >
       <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Insper CTF Arena | V2</h1>
+        <h1 className="text-2xl font-bold">CTF Arena | V2</h1>
         <p className="text-muted-foreground text-sm text-balance">
           Entre com suas credenciais nos campos abaixo.
         </p>
